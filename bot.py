@@ -23,14 +23,28 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 # Event: Bot is Ready
 @bot.event
 async def on_ready():
-    print(f"✅ Logged in as {bot.user}")
+    print(f"Logged in as {bot.user}")
 
-# Command: Ping
+# Command: Test
+@bot.command(name="poz", aliases=["pozdrav", "cao"]) 
+async def _pozdravlja(ctx): 
+    await ctx.send(f"i tebi {ctx.author.mention}")
+
+
 @bot.command()
-async def ping(ctx):
-    await ctx.send("🏓 Pong!")
-
+async def sendembded(ctx):
+    embed = discord.Embed(title="Ime", description="Opis", color=discord.Color.random())
+    embed.set_thumbnail(url=ctx.author.avatar)
+    embed.add_field(name="test", value="opet", inline=False)
+    embed.set_image(url=ctx.guild.icon)
+    embed.set_footer(text="posle ce biti nes", icon_url=ctx.author.avatar)
+    await ctx.send(embed=embed)
 # Run the bot
 bot.run(TOKEN)
+
+
+# bot commands
+
+
 
 
