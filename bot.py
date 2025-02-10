@@ -3,6 +3,7 @@ from discord.ext import commands
 import os
 import asyncio
 
+
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 
 # Event: Bot is Ready
