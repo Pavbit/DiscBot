@@ -36,13 +36,21 @@ class Komande(commands.Cog):
     @commands.command()
     async def user(self, ctx):
         await ctx.send("Unesi ime: ")
-        if " message" == self.bot.user:
+        if "message" == self.bot.user:
             return
         name = await self.bot.wait_for("message")
         await ctx.send(f"Poz {name.content}")
      
 
+    @commands.command()
+    async def panic(self, ctx):
+         panic_embed = discord.Embed(title="Na Panica", description="sI pOlOzIo MeNaDzMeNt AAAA", color=discord.Color.random())
+         panic_embed.set_image(url="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2dxejJicWU1cjZkMncwNnEwYXNvMGx0M3IxeW1qYmxmamZkeDVhdSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ESgYN7LGXgIO4/giphy.gif")
+         panic_embed.set_footer(text=f"zasluzeno ga spalio {ctx.author.name}", icon_url=ctx.author.avatar)
+         await ctx.send(embed=panic_embed)
+         
 
 async def setup(bot):
     await bot.add_cog(Komande(bot))
     
+
