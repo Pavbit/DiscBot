@@ -21,13 +21,13 @@ class Reddit(commands.Cog):
         
         subreddit = await self.reddit.subreddit("serbia")
         posts = []
+        valid_extensions = [".jpg", ".png", ".jpeg", ".gif", ".mp4", ".mov"]
         
-        async for post in subreddit.hot(limit=20):
-            valid_extensions = [".jpg", ".png", ".jpeg", ".gif", ".mp4", ".mov"]
-            if post.author is not None and any(post.url.endswith(ext) for ext in valid_extensions):
-                posts.append(post)
-            elif post.author is None:
-                posts.append(post)
+        async for post in subreddit.hot(limit=40):
+            if post.author and post.author.name == "AutoModerator":
+                continue
+            if post.is_self or any(post.url.endswith(ext) for ext in valid_extensions):
+                    posts.append(post)
          
         if posts:
             random_post = choice(posts)
@@ -36,8 +36,8 @@ class Reddit(commands.Cog):
                 description=random_post.selftext or "Nema teksta",
                 color=discord.Color.random())
             
-            #post_embed.set_author(name=f"Obavljeno od strane {ctx.author.name}", icon_url=ctx.author.avatar)
-            post_embed.set_image(url=random_post.url)
+            if not random_post.is_self and any(random_post.url.endswith(ext) for ext in valid_extensions):
+                post_embed.set_image(url=random_post.url)
             author_name = random_post.author.name if random_post.author else "Nepoznat"
             post_embed.set_footer(text=f"Objavio: {author_name}")
             await ctx.send(embed=post_embed)     
@@ -47,22 +47,26 @@ class Reddit(commands.Cog):
     @commands.command()
     async def raserb(self, ctx: commands.Context):
         subreddit = await self.reddit.subreddit("AskSerbia")
-        text_posts = []
+        posts = []
+        valid_extensions = [".jpg", ".png", ".jpeg", ".gif", ".mp4", ".mov"]
         
-        
-        async for post in subreddit.hot(limit=20):
-            if post.is_self:  
-                text_posts.append(post)
+        async for post in subreddit.hot(limit=40):
+            if post.author and post.author.name == "AutoModerator":
+                continue
+            if post.is_self or any(post.url.endswith(ext) for ext in valid_extensions):
+                posts.append(post)
          
-        if text_posts:
-            random_post = choice(text_posts)
-            
+        if posts:
+            random_post = choice(posts)
             text_embed = discord.Embed(
                 title=random_post.title,
-                description=random_post.selftext or "Nema teksta", 
+                description=random_post.selftext or "Nema teksta",
                 color=discord.Color.random())
+
+            if not random_post.is_self and any(random_post.url.endswith(ext) for ext in valid_extensions):
+                text_embed.set_image(url=random_post.url)
             author_name = random_post.author.name if random_post.author else "Nepoznat"
-            text_embed.set_footer(text=f"Objavio {author_name}", icon_url=None)
+            text_embed.set_footer(text=f"Objavio: {author_name}")
             await ctx.send(embed=text_embed)
         else:
             await ctx.send("Nema postova")
