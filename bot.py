@@ -18,7 +18,7 @@ bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 bot_statuses = cycle(["Burning King's Landing", "Flying over Westeros", "Resting at Valyria"])
 
                     
-@tasks.loop(seconds=300)
+@tasks.loop(seconds=250)
 
 async def change_bot_status():
     await bot.change_presence(activity=discord.Game(next(bot_statuses)))
