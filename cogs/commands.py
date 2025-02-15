@@ -1,7 +1,9 @@
 import discord
 from discord import app_commands
 from discord.ext import commands
-class Komande(commands.Cog):
+class Commands(commands.Cog):
+    
+    
     def __init__(self, bot):
         self.bot = bot
 
@@ -10,7 +12,7 @@ class Komande(commands.Cog):
         print(f"{__name__} is online")
         
 
-    @app_commands.command(name="ping", description="Informacije bot-a.")
+    @app_commands.command(name="ping", description="Informacije bota.")
     async def ping(self, interaction: discord.Interaction):
         bot_avatar = getattr(self.bot.user, "avatar_url", self.bot.user.avatar)
         creation_date = self.bot.user.created_at.strftime("%Y-%m-%d") #konvertuje datum u string
@@ -57,6 +59,6 @@ class Komande(commands.Cog):
          
 
 async def setup(bot):
-    await bot.add_cog(Komande(bot))
+    await bot.add_cog(Commands(bot))
     
 

@@ -5,6 +5,7 @@ import asyncio
 from itertools import cycle
 from dotenv import load_dotenv
 
+
 env_file_path = r"C:\Users\Andrija\Desktop\bitno\maksbot\.env"
 load_dotenv(env_file_path)
 
