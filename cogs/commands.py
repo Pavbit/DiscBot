@@ -1,6 +1,9 @@
+import os
 import discord
 from discord import app_commands
 from discord.ext import commands
+
+
 class Commands(commands.Cog):
     
     
@@ -12,51 +15,68 @@ class Commands(commands.Cog):
         print(f"{__name__} is online")
         
 
-    @app_commands.command(name="ping", description="Informacije bota.")
+    @app_commands.command(name="ping", description="Bot information")
     async def ping(self, interaction: discord.Interaction):
         bot_avatar = getattr(self.bot.user, "avatar_url", self.bot.user.avatar)
         creation_date = self.bot.user.created_at.strftime("%Y-%m-%d") #konvertuje datum u string
         
-        ping_embed = discord.Embed(title="O botu", description=f"Bot nastao {creation_date}", 
+        ping_embed = discord.Embed(title="About bot", description=f"Bot created on {creation_date} by pavke_c, still in beta version. If you have any ideas or bug reports, feel free to use /feedback", 
                                    color=discord.Color.green())
         ping_embed.set_thumbnail(url=str(bot_avatar))
         ping_embed.add_field(name=f"{self.bot.user.name}", value=f"{round(self.bot.latency * 1000)}ms", inline=False)
-        ping_embed.set_footer(text=f"Obavljeno od strane {interaction.user.name}", icon_url=interaction.user.avatar)
+        ping_embed.set_footer(text=f"Command done by {interaction.user.name}", icon_url=interaction.user.avatar)
         await interaction.response.send_message(embed=ping_embed)
 
-    @app_commands.command(name="info", description="Informacije o serveru.")
+    @app_commands.command(name="info", description="Basic information about the server")
     async def info(self, interaction: discord.Interaction):
         creation_date = interaction.guild.created_at.strftime("%Y-%m-%d") #konvertuje datum u string
         
         info_embed = discord.Embed(title=interaction.guild.name, 
-            description=f"Server ima {interaction.guild.member_count} ljudi.", color=discord.Color.random())
+            description=f"Server has {interaction.guild.member_count} people.", color=discord.Color.random())
         info_embed.set_thumbnail(url=interaction.user.avatar)
-        info_embed.add_field(name="Datum nastanka", value=creation_date, inline=False)
+        info_embed.add_field(name="Date of creation", value=creation_date, inline=False)
         info_embed.set_image(url=interaction.guild.icon)
-        info_embed.set_footer(text=f"Obavljeno od strane {interaction.user.name}", icon_url=interaction.user.avatar)
+        info_embed.set_footer(text=f"Command done by {interaction.user.name}", icon_url=interaction.user.avatar)
         await interaction.response.send_message(embed=info_embed)
-
-    @app_commands.command(name="user", description="Pozdrav korisnika.")
-    async def user(self, interaction: discord.Interaction):
-        await interaction.response.send_message("Unesi ime:")
-        
-        def check(message: discord.Message):
-            return message.author == interaction.user and message.channel == interaction.channel
-        
-        try:
-            msg = await self.bot.wait_for("message", check=check, timeout=30)
-            await interaction.followup.send(f"Poz {msg.content}")
-        except Exception:
-            await interaction.followup.send("Nije registrovano ime.")
-     
-
-    @app_commands.command(name="panic", description="Na panica.")
-    async def panic(self, interaction: discord.Interaction):
-         panic_embed = discord.Embed(title="Na Panica", description="sI pOlOzIo MeNaDzMeNt AAAA", color=discord.Color.random())
-         panic_embed.set_image(url="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2dxejJicWU1cjZkMncwNnEwYXNvMGx0M3IxeW1qYmxmamZkeDVhdSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ESgYN7LGXgIO4/giphy.gif")
-         panic_embed.set_footer(text=f"zasluzeno ga spalio {interaction.user.name}", icon_url=interaction.user.avatar)
-         await interaction.response.send_message(embed=panic_embed)
          
+    @app_commands.command(name="feedback", description="Send a raven with your feedback or bug report to the Queen")
+    async def feedback(self, interaction: discord.Interaction, message: str):
+        feedback_channel_id = 1341799697760649286
+        feedback_channel = self.bot.get_channel(feedback_channel_id)
+        
+        embed = discord.Embed(title="New Feedback Received", description=message, color=discord.Color.blue())
+        embed.set_footer(text=f"Sent by {interaction.user.name}", icon_url=interaction.user.avatar.url if interaction.user.avatar else None)
+        
+        await feedback_channel.send(embed=embed)
+        await interaction.response.send_message("Your raven has been sent to the Queen's council. Let's hope it doesn't get intercepted by Lannisters.", ephemeral=True)     
+    
+    
+    @app_commands.command(name="invite", description="Invite the bot to your server")
+    async def invite(self, interaction: discord.Interaction):
+        invite_image = "./cogs/images/dragoninvite.jpg"
+        invite_link = "https://discord.com/oauth2/authorize?client_id=1334985967110586441&permissions=1126451810528320&integration_type=0&scope=bot"
+        
+        invite_embed = discord.Embed(title="The Dragon's Call: Invite Drakonis to Your Kingdom", 
+                                     description="From the ashes of the old world, the dragon rises. Invite Drakonis and rule the Seven Kingdoms!", 
+                                     color=discord.Color.red())
+        
+        invite_embed.set_image(url="attachment://dragoninvite.jpg")
+        file = discord.File(invite_image, filename="dragoninvite.jpg")
+        
+        invite_embed.add_field(name="Click here:", value=invite_link, inline=False)
+        invite_embed.set_footer(text=f"Command done by {interaction.user.name}", icon_url=interaction.user.avatar)
+        await interaction.response.send_message(embed=invite_embed, file=file)
+        
+    @app_commands.command(name="help", description="Displays all available commands")
+    async def help(self, interaction: discord.Interaction):
+        help_embed = discord.Embed(title="Available Commands", color=discord.Color.blue())
+        
+        for command in self.bot.tree.get_commands():
+            if command.name == "help": continue
+            help_embed.add_field(name=f"/{command.name}", value=command.description, inline=False)
+
+        help_embed.set_footer(text=f"Command done by {interaction.user.name}", icon_url=interaction.user.avatar)
+        await interaction.response.send_message(embed=help_embed)
 
 async def setup(bot):
     await bot.add_cog(Commands(bot))

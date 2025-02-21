@@ -26,14 +26,14 @@ class Reddit(commands.Cog):
         print(f"{__name__} povezan")
         
         
-    @app_commands.command(name="rserb", description="Random hot postovi sa r/serbia.")
-    async def rserb(self, interaction: discord.Interaction): 
+    @app_commands.command(name="rgot", description="Random hot topics on r/gameofthrones")
+    async def rgot(self, interaction: discord.Interaction): 
         
-        subreddit = await self.reddit.subreddit("serbia")
+        subreddit = await self.reddit.subreddit("gameofthrones")
         posts = []
         valid_extensions = [".jpg", ".png", ".jpeg", ".gif"]
         
-        async for post in subreddit.hot(limit=100):
+        async for post in subreddit.hot(limit=50):
             if post.author and post.author.name == "AutoModerator":
                 continue
             if post.is_self or any(post.url.endswith(ext) for ext in valid_extensions):
@@ -43,24 +43,24 @@ class Reddit(commands.Cog):
             random_post = choice(posts)
             post_embed = discord.Embed(
                 title=random_post.title,
-                description=random_post.selftext or "Nema teksta",
+                description=random_post.selftext or "No text",
                 color=discord.Color.random())
             
             if not random_post.is_self and any(random_post.url.endswith(ext) for ext in valid_extensions):
                 post_embed.set_image(url=random_post.url)
-            author_name = random_post.author.name if random_post.author else "Nepoznat"
-            post_embed.set_footer(text=f"Objavio u/{author_name} na r/{random_post.subreddit.display_name}")
+            author_name = random_post.author.name if random_post.author else "Unkown"
+            post_embed.set_footer(text=f"Posted by u/{author_name} on r/{random_post.subreddit.display_name}")
             await interaction.response.send_message(embed=post_embed)     
         else:
-            await interaction.response.send_message("Nema postova")
+            await interaction.response.send_message("No posts")
     
-    @app_commands.command(name="raserb", description="Random hot postovi sa r/AskSerbia.")
-    async def raserb(self, interaction: discord.Interaction):
-        subreddit = await self.reddit.subreddit("AskSerbia")
+    @app_commands.command(name="rhotd", description="Random hot topics on r/HouseOfTheDragon")
+    async def rhotd(self, interaction: discord.Interaction):
+        subreddit = await self.reddit.subreddit("HouseOfTheDragon")
         posts = []
         valid_extensions = [".jpg", ".png", ".jpeg", ".gif"]
         
-        async for post in subreddit.hot(limit=100):
+        async for post in subreddit.hot(limit=50):
             if post.author and post.author.name == "AutoModerator":
                 continue
             if post.is_self or any(post.url.endswith(ext) for ext in valid_extensions):
@@ -70,16 +70,16 @@ class Reddit(commands.Cog):
             random_post = choice(posts)
             text_embed = discord.Embed(
                 title=random_post.title,
-                description=random_post.selftext or "Nema teksta",
+                description=random_post.selftext or "No text",
                 color=discord.Color.random())
 
             if not random_post.is_self and any(random_post.url.endswith(ext) for ext in valid_extensions):
                 text_embed.set_image(url=random_post.url)
-            author_name = random_post.author.name if random_post.author else "Nepoznat"
-            text_embed.set_footer(text=f"Objavio u/{author_name} na r/{random_post.subreddit.display_name}")
+            author_name = random_post.author.name if random_post.author else "Unkown"
+            text_embed.set_footer(text=f"Posted by u/{author_name} on r/{random_post.subreddit.display_name}")
             await interaction.response.send_message(embed=text_embed)
         else:
-            await interaction.response.send_message("Nema postova")
+            await interaction.response.send_message("No posts")
             
     def cog_unload(self):
         self.bot.loop.create_task(self.reddit.close())

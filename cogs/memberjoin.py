@@ -20,6 +20,11 @@ class MemberJoin(commands.Cog):
             print("Nije pronadjen kanal za dobrodoslicu")
             return
         
+        welcome_messages = [
+            f"All hail {member.mention}! A new protector of the realm has arrived to fortify the walls of {member.guild.name}!",
+            f"The banners are raised, the horns sound! {member.mention} has entered the court of {member.guild.name}. May they serve with honor!",
+            f"The gates of {member.guild.name} open wide as {member.mention} rides forth to claim their place as the #{member.guild.member_count} protector of the realm!"
+        ]
         
         images_path = "./cogs/welcomemember_images"
         if not os.path.exists(images_path):
@@ -31,7 +36,7 @@ class MemberJoin(commands.Cog):
             print("Nisu pronadjene slike")
             return
 
-        
+        randomized_welcome = random.choice(welcome_messages)
         randomized_image = random.choice(images)
 
         try:
@@ -64,8 +69,8 @@ class MemberJoin(commands.Cog):
         
         bg.paste(avatar, (835, 340))
         bg.ellipse((835, 340), 250, 250, outline="white", stroke_width=5)
-        bg.text((960, 620), f"Dobrodosao u {member.guild.name}!", color="white", font=font_big, align="center")
-        bg.text((960, 740), f"{member.name} je #{member.guild.member_count} clan servera.", 
+        bg.text((960, 620), f"The Realm Welcomes {member.name}!", color="white", font=font_big, align="center")
+        bg.text((960, 740), f"Now among the {member.guild.member_count} sworn protectors of {member.guild.name}", 
                 color="white", font=font_small, align="center") 
 
 
@@ -73,7 +78,7 @@ class MemberJoin(commands.Cog):
         image_file = discord.File(fp=image_bytes, filename="welcome.png")
 
        
-        await welcome_channel.send(f"Dobrodosao {member.name}!")
+        await welcome_channel.send(f"{randomized_welcome}")
         await welcome_channel.send(file=image_file)
 
 
