@@ -11,7 +11,8 @@ load_dotenv()
 class AIresponse(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.client = OpenAI(api_key=os.getenv("OPENAI_API"))
+        OPENAI_API: str = os.getenv("OPENAI_API")
+        self.client = OpenAI(api_key=(OPENAI_API))
         self.conversations = {}
         self.system_prompt = {
             "role": "system",
