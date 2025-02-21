@@ -11,14 +11,14 @@ env_file_path = r"C:\Users\Andrija\Desktop\bitno\maksbot\.env"
 load_dotenv(env_file_path)
 
 
-REDDIT_API: str = os.getenv("REDDIT_API")
+CLIENT_SECRET_REDDIT: str = os.getenv("CLIENT_SECRET_REDDIT")
 CLIENT_ID_REDDIT: str = os.getenv("CLIENT_ID_REDDIT")
 
 class Reddit(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.reddit = praw.Reddit(client_id= (CLIENT_ID_REDDIT),
-                                  client_secret= (REDDIT_API),
+                                  client_secret= (CLIENT_SECRET_REDDIT),
                                   user_agent="script:randomposts:v1.0 (by u/OddProgrammerInC)")
         
     @commands.Cog.listener()
