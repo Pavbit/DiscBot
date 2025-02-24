@@ -38,6 +38,11 @@ async def on_ready():
 #async def testi(interaction: discord.Interaction):
     #await interaction.response.send_message(f"poz {interaction.user.mention}")
 
+@bot.command()
+async def servers(ctx):
+    guilds = bot.guilds
+    server_names = "\n".join([guild.name for guild in guilds])
+    await ctx.send(f"Lista svih servera:\n{server_names}")
 
 
 async def Load():
